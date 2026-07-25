@@ -15,7 +15,7 @@ export class Many2OnePreviewField extends Many2OneField {
 
     setup() {
         super.setup();
-        this.previewState = useState({ open: false });
+        this.previewState = useState({ open: false, style: "" });
     }
 
     get previewFieldNames() {
@@ -31,22 +31,36 @@ export class Many2OnePreviewField extends Many2OneField {
         return this.resId;
     }
 
-    // The card is rendered as a plain DOM child of the same wrapper as the
-    // trigger icon (no popover/portal involved) specifically so that a
-    // single mouseenter/mouseleave pair on the wrapper is enough: the mouse
-    // moving between the icon and the card never leaves the wrapper's own
-    // DOM subtree, so the browser never fires a spurious leave/enter cycle
-    // no matter how the card happens to be positioned or sized. An earlier
-    // version used `usePopover`, which renders its content through a
-    // portal into a separate `.o_popover` wrapper elsewhere in the
-    // document — the mouse crossing into *that* subtree caused real
-    // mouseleave events on the trigger with no reliable way to tell "this
-    // left to the card" from "this left the widget entirely", which kept
-    // causing an open/close flicker.
-    onWrapperMouseEnter() {
-        if (this.previewResId) {
-            this.previewState.open = true;
+    // The card is rendered as a plain DOM child of the same small wrapper as
+    // the trigger icon (no popover/portal involved) — that wrapper contains
+    // only the eye icon and the card, *not* the many2one field itself, so
+    // hovering the field doesn't open the card, only hovering the icon (or
+    // the card) does. Because both are always DOM descendants of that one
+    // wrapper, the browser only fires a real mouseleave once the cursor
+    // leaves their combined bounding region, however closely the card is
+    // positioned relative to the icon. An earlier version used `usePopover`,
+    // which renders its content through a portal into a separate
+    // `.o_popover` wrapper elsewhere in the document — the mouse crossing
+    // into *that* subtree caused real mouseleave events on the trigger with
+    // no reliable way to tell "this left to the card" from "this left the
+    // widget entirely", which caused an open/close flicker.
+    onWrapperMouseEnter(ev) {
+        if (!this.previewResId) {
+            return;
         }
+        // `position: fixed`, anchored from the *viewport* edges (not the
+        // trigger's own offsetParent), so the card renders on top of
+        // whatever the page looks like right now and is never clipped by an
+        // `overflow: hidden` ancestor (a form sheet, a table cell, ...) the
+        // way a plain `position: absolute` card confined to this wrapper
+        // would be. Anchoring via `bottom`/`right` instead of `top`/`left`
+        // means the card grows upward/leftward as its async content loads,
+        // without needing to know its final size up front.
+        const rect = ev.currentTarget.getBoundingClientRect();
+        this.previewState.style =
+            `position: fixed; bottom: ${window.innerHeight - rect.top + 6}px; ` +
+            `right: ${window.innerWidth - rect.right}px;`;
+        this.previewState.open = true;
     }
 
     onWrapperMouseLeave() {
@@ -56,7 +70,11 @@ export class Many2OnePreviewField extends Many2OneField {
     onPreviewClick(ev) {
         ev.stopPropagation();
         ev.preventDefault();
-        this.previewState.open = !this.previewState.open;
+        if (this.previewState.open) {
+            this.previewState.open = false;
+        } else {
+            this.onWrapperMouseEnter(ev);
+        }
     }
 }
 

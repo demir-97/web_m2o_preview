@@ -1,4 +1,4 @@
-.o_m2o_preview_wrapper {
+.o_m2o_preview_trigger_wrapper {
     position: relative;
 }
 
@@ -12,16 +12,16 @@
     }
 }
 
-// Rendered as a plain child of `.o_m2o_preview_wrapper` (not through Odoo's
-// popover/portal service) so hover tracking on the wrapper alone is enough
-// to cover both the trigger icon and this card — see the comment in
-// many2one_preview_field.js for why.
-.o_m2o_preview_card {
-    position: absolute;
+// Positioned via an inline `style` (position: fixed, computed from the
+// trigger icon's viewport rect in many2one_preview_field.js) so the card
+// always renders on top of the page and is never clipped by an
+// `overflow: hidden` ancestor — a form sheet, a table cell, ... — the way a
+// plain `position: absolute` confined to this widget's own wrapper would be.
+.o_m2o_preview_card_anchor {
     z-index: 1060;
-    bottom: 100%;
-    right: 0;
-    margin-bottom: 6px;
+}
+
+.o_m2o_preview_card {
     min-width: 180px;
     max-width: 280px;
     background-color: var(--Popover-bg, white);

@@ -2,25 +2,29 @@
 <templates xml:space="preserve">
 
     <t t-name="web_m2o_preview.Many2OnePreviewField">
-        <span class="o_m2o_preview_wrapper position-relative d-inline-flex align-items-center w-100 gap-1"
-            t-on-mouseenter="onWrapperMouseEnter"
-            t-on-mouseleave="onWrapperMouseLeave">
+        <span class="o_m2o_preview_wrapper d-inline-flex align-items-center w-100 gap-1">
             <span class="flex-grow-1 min-w-0">
                 <t t-call="web.Many2OneField"/>
             </span>
-            <i t-if="previewResId"
-                class="o_m2o_preview_trigger fa fa-eye text-muted"
-                title="Preview"
-                role="button"
-                tabindex="0"
-                t-on-click="onPreviewClick"
-            />
-            <M2oPreviewCard t-if="previewState.open and previewResId"
-                resModel="relation"
-                resId="previewResId"
-                fieldNames="previewFieldNames"
-                imageField="props.previewImageField or ''"
-            />
+            <span t-if="previewResId"
+                class="o_m2o_preview_trigger_wrapper d-inline-flex"
+                t-on-mouseenter="onWrapperMouseEnter"
+                t-on-mouseleave="onWrapperMouseLeave">
+                <i class="o_m2o_preview_trigger fa fa-eye text-muted"
+                    title="Preview"
+                    role="button"
+                    tabindex="0"
+                    t-on-click="onPreviewClick"
+                />
+                <div t-if="previewState.open" t-att-style="previewState.style" class="o_m2o_preview_card_anchor">
+                    <M2oPreviewCard
+                        resModel="relation"
+                        resId="previewResId"
+                        fieldNames="previewFieldNames"
+                        imageField="props.previewImageField or ''"
+                    />
+                </div>
+            </span>
         </span>
     </t>
 
