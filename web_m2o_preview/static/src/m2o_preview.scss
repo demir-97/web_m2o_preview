@@ -1,3 +1,7 @@
+.o_m2o_preview_wrapper {
+    position: relative;
+}
+
 .o_m2o_preview_trigger {
     cursor: pointer;
     opacity: 0.5;
@@ -8,9 +12,22 @@
     }
 }
 
-.o_m2o_preview_popover {
+// Rendered as a plain child of `.o_m2o_preview_wrapper` (not through Odoo's
+// popover/portal service) so hover tracking on the wrapper alone is enough
+// to cover both the trigger icon and this card — see the comment in
+// many2one_preview_field.js for why.
+.o_m2o_preview_card {
+    position: absolute;
+    z-index: 1060;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 6px;
     min-width: 180px;
     max-width: 280px;
+    background-color: var(--Popover-bg, white);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 .o_m2o_preview_avatar {

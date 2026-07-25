@@ -1,17 +1,17 @@
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
-import { usePopover } from "@web/core/popover/popover_hook";
+import { useState } from "@odoo/owl";
 import {
     Many2OneField,
     m2oSupportedOptions,
     m2oSupportedTypes,
     extractM2OFieldProps,
 } from "@web/views/fields/many2one/many2one_field";
-import { M2oPreviewPopover } from "./m2o_preview_popover";
+import { M2oPreviewCard } from "./m2o_preview_card";
 
 export class Many2OnePreviewField extends Many2OneField {
     static template = "web_m2o_preview.Many2OnePreviewField";
+    static components = { ...Many2OneField.components, M2oPreviewCard };
     static props = {
         ...Many2OneField.props,
         previewFields: { type: String, optional: true },
@@ -19,9 +19,7 @@ export class Many2OnePreviewField extends Many2OneField {
     };
 
     setup() {
-        this.orm = useService("orm");
-        this.m2oPreviewPopover = usePopover(M2oPreviewPopover, { position: "top" });
-        this.closeTimer = null;
+        this.previewState = useState({ open: false });
     }
 
     get previewFieldNames() {
@@ -33,7 +31,7 @@ export class Many2OnePreviewField extends Many2OneField {
 
     // The raw many2one value is `{id, display_name}` in 19.0 and
     // `[id, display_name]` in 17.0/18.0 — support both.
-    get currentResId() {
+    get previewResId() {
         const value = this.props.record.data[this.props.name];
         if (!value) {
             return false;
@@ -45,46 +43,26 @@ export class Many2OnePreviewField extends Many2OneField {
         return this.props.record.fields[this.props.name].relation;
     }
 
-    // Odoo wraps the popover content in its own `.o_popover` box (arrow,
-    // padding, ...), so `relatedTarget`-based containment checks on
-    // mouseleave/mouseenter are unreliable — the mouse crosses into that
-    // outer wrapper first, not directly into our template's root element.
-    // A short close-delay ("hover intent") sidesteps the exact DOM
-    // structure entirely: leaving either the trigger or the popover just
-    // schedules a close, and entering the other one cancels it.
-    _cancelScheduledClose() {
-        if (this.closeTimer) {
-            clearTimeout(this.closeTimer);
-            this.closeTimer = null;
+    // The card is rendered as a plain DOM child of the same wrapper as the
+    // trigger icon (no popover/portal involved) specifically so that a
+    // single mouseenter/mouseleave pair on the wrapper is enough: the mouse
+    // moving between the icon and the card never leaves the wrapper's own
+    // DOM subtree, so the browser never fires a spurious leave/enter cycle
+    // no matter how the card happens to be positioned or sized. An earlier
+    // version used `usePopover`, which renders its content through a
+    // portal into a separate `.o_popover` wrapper elsewhere in the
+    // document — the mouse crossing into *that* subtree caused real
+    // mouseleave events on the trigger with no reliable way to tell "this
+    // left to the card" from "this left the widget entirely", which kept
+    // causing an open/close flicker.
+    onWrapperMouseEnter() {
+        if (this.previewResId) {
+            this.previewState.open = true;
         }
     }
 
-    _scheduleClose() {
-        this._cancelScheduledClose();
-        this.closeTimer = setTimeout(() => {
-            this.closeTimer = null;
-            this.m2oPreviewPopover.close();
-        }, 200);
-    }
-
-    onPreviewMouseEnter(ev) {
-        const resId = this.currentResId;
-        if (!resId) {
-            return;
-        }
-        this._cancelScheduledClose();
-        this.m2oPreviewPopover.open(ev.currentTarget, {
-            resModel: this.relation,
-            resId,
-            fieldNames: this.previewFieldNames,
-            imageField: this.props.previewImageField || "",
-            onPopoverMouseEnter: () => this._cancelScheduledClose(),
-            onPopoverMouseLeave: () => this._scheduleClose(),
-        });
-    }
-
-    onPreviewMouseLeave() {
-        this._scheduleClose();
+    onWrapperMouseLeave() {
+        this.previewState.open = false;
     }
 
     onPreviewClick(ev) {
@@ -92,12 +70,7 @@ export class Many2OnePreviewField extends Many2OneField {
         // don't let the click bubble to the many2one widget underneath.
         ev.stopPropagation();
         ev.preventDefault();
-        this._cancelScheduledClose();
-        if (this.m2oPreviewPopover.isOpen) {
-            this.m2oPreviewPopover.close();
-        } else {
-            this.onPreviewMouseEnter(ev);
-        }
+        this.previewState.open = !this.previewState.open;
     }
 }
 
