@@ -1,0 +1,63 @@
+<section style="max-width: 900px; margin: 0 auto; padding: 32px 16px; font-family: Arial, Helvetica, sans-serif; color: #333;">
+    <!-- apps.odoo.com strips background/gradient styles but keeps text colors:
+         every text color here must stay readable on a plain white page. -->
+    <div style="text-align: center; padding: 40px 24px; background-color: #f6f1f5; border: 1px solid #e4d9e1; border-radius: 12px;">
+        <h1 style="margin: 0 0 12px; font-size: 32px; color: #5E3C58;">Many2one Hover Preview &mdash; See Who's Behind a Field Without Leaving the Form</h1>
+        <p style="margin: 0; font-size: 18px; color: #555;">Adds a small eye icon next to any many2one field using the <code>many2one_preview</code> widget. Hover it (or tap it on a touch device) and a small card pops up with the linked record's name, an optional image, and any extra fields you choose.</p>
+        <div style="display:flex; justify-content:center; gap:10px; margin-top:18px; flex-wrap:wrap;">
+        <span style="display:inline-block; background:#EAF5EC; color:#1F7A54; border:1px solid #BCDFC6; border-radius:20px; padding:6px 16px; font-size:13px; font-weight:600;">✓ Odoo 17.0</span><span style="display:inline-block; background:#EAF5EC; color:#1F7A54; border:1px solid #BCDFC6; border-radius:20px; padding:6px 16px; font-size:13px; font-weight:600;">✓ Odoo 18.0</span><span style="display:inline-block; background:#EAF5EC; color:#1F7A54; border:1px solid #BCDFC6; border-radius:20px; padding:6px 16px; font-size:13px; font-weight:600;">✓ Odoo 19.0</span>
+    </div>
+    </div>
+
+
+    <div style="margin-top: 32px;">
+        <h2 style="color: #875A7B; font-size: 24px;">How it works</h2>
+        <ol style="font-size: 15px; line-height: 1.9; padding-left: 20px; margin-bottom: 0;"><li>Add <code>widget="many2one_preview"</code> to a many2one field in a view (see Usage below).</li><li>Open a record that has that field filled in.</li><li>Hover the small eye icon next to the field — a card pops up with the linked record's details.</li></ol>
+    </div>
+
+    <div style="margin-top: 32px;">
+        <h2 style="color: #875A7B; font-size: 24px;">Why this module?</h2>
+        <p style="font-size: 15px; line-height: 1.6;">Opening a related record just to check its email or city breaks your flow and loses your place on the current form. One hover icon settles it in place &mdash; no navigation, no extra click.</p>
+    </div>
+
+    <div style="margin-top: 32px;">
+        <h2 style="color: #875A7B; font-size: 24px;">What stays untouched</h2>
+        <ul style="font-size: 15px; line-height: 1.9; padding-left: 20px; margin-bottom: 0;"><li>The normal many2one behavior &mdash; search, quick create, opening the record.</li><li>The preview is purely additive and read-only.</li></ul>
+    </div>
+
+    <div style="margin-top: 32px;">
+        <h2 style="color: #875A7B; font-size: 24px;">Technical</h2>
+        <p style="font-size: 15px; line-height: 1.6;">One new field widget (<code>many2one_preview</code>, extends the core <code>Many2OneField</code>) plus a small popover component. No models, no views, no security rules shipped &mdash; nothing changes until you add the widget yourself.</p>
+    </div>
+
+    <div style="margin-top: 32px; padding: 24px; background: #f6f2f5; border-left: 4px solid #875A7B; border-radius: 0 12px 12px 0;">
+        <h2 style="color: #875A7B; font-size: 24px; margin-top: 0;">Usage</h2>
+        <pre style="background-color: #f5f5f5; color: #333; border: 1px solid #ddd; padding: 16px; border-radius: 8px; font-size: 14px; overflow-x: auto;">&lt;field name="partner_id" widget="many2one_preview"
+       options="{'preview_fields': 'email,phone,city', 'preview_image_field': 'avatar_128'}"/&gt;</pre><p style="font-size: 15px; line-height: 1.6;"><code>preview_fields</code> (optional): comma-separated technical field names of the linked model to show in the card. <code>preview_image_field</code> (optional): technical name of an image field (e.g. <code>avatar_128</code>). Omit it to show no image.</p>
+    </div>
+
+    <div style="margin-top: 32px;">
+        <h2 style="color: #875A7B; font-size: 24px;">Frequently asked questions</h2>
+        
+        <div style="margin-bottom:18px;">
+            <div style="font-size:15px; font-weight:700; color:#5E3C58; margin-bottom:4px;">Does it change how the field is saved?</div>
+            <div style="font-size:15px; line-height:1.6; color:#444;">No — the preview is read-only and purely additive. Search, quick create and opening the record all work exactly as before.</div>
+        </div>
+        <div style="margin-bottom:18px;">
+            <div style="font-size:15px; font-weight:700; color:#5E3C58; margin-bottom:4px;">Can I use it on any many2one field?</div>
+            <div style="font-size:15px; line-height:1.6; color:#444;">Yes, on any model — just add <code>widget="many2one_preview"</code> to the field in a form view.</div>
+        </div>
+        <div style="margin-bottom:18px;">
+            <div style="font-size:15px; font-weight:700; color:#5E3C58; margin-bottom:4px;">What if I don't set an image field?</div>
+            <div style="font-size:15px; line-height:1.6; color:#444;">Leave <code>preview_image_field</code> out of the options and the card simply shows no image, only the name and the fields you listed.</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; text-align: center; padding: 24px; background: #f6f2f5; border-radius: 12px;">
+        <h2 style="color: #875A7B; font-size: 22px; margin-top: 0;">Support</h2>
+        <p style="font-size: 15px; margin-bottom: 0;">
+            Questions, bug reports or feature requests:
+            <a href="mailto:meisanqo@outlook.com" style="color: #875A7B;"><b>meisanqo@outlook.com</b></a>
+        </p>
+    </div>
+</section>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_m2o_preview.M2oPreviewPopover">
+        <div class="o_m2o_preview_popover p-2">
+            <div t-if="state.loading" class="text-muted small">
+                <i class="fa fa-spin fa-circle-o-notch me-1"/>Loading...
+            </div>
+            <div t-else="" class="d-flex align-items-start gap-2">
+                <img t-if="props.imageField"
+                    t-att-src="imageUrl"
+                    class="o_m2o_preview_avatar rounded flex-shrink-0"
+                    alt=""
+                />
+                <div class="flex-grow-1 min-w-0">
+                    <div class="fw-bold text-truncate" t-esc="state.data.display_name"/>
+                    <t t-foreach="props.fieldNames" t-as="fname" t-key="fname">
+                        <div t-if="fieldValue(fname)" class="small text-truncate">
+                            <span class="text-muted" t-esc="fieldLabel(fname)"/><span t-esc="': '"/><span t-esc="fieldValue(fname)"/>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>
