@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_m2o_preview.Many2OnePreviewField">
+        <span class="o_m2o_preview_wrapper d-inline-flex align-items-center w-100 gap-1">
+            <span class="flex-grow-1 min-w-0">
+                <t t-call="web.Many2OneField"/>
+            </span>
+            <i t-if="currentResId"
+                class="o_m2o_preview_trigger fa fa-eye text-muted"
+                title="Preview"
+                role="button"
+                tabindex="0"
+                t-on-mouseenter="onPreviewMouseEnter"
+                t-on-mouseleave="onPreviewMouseLeave"
+                t-on-click="onPreviewClick"
+            />
+        </span>
+    </t>
+
+</templates>
