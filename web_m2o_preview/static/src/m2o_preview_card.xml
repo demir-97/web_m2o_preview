@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="web_m2o_preview.M2oPreviewPopover">
-        <div class="o_m2o_preview_popover p-2" t-on-mouseenter="onMouseEnter" t-on-mouseleave="onMouseLeave">
+    <t t-name="web_m2o_preview.M2oPreviewCard">
+        <div class="o_m2o_preview_card p-2">
             <div t-if="state.loading" class="text-muted small">
                 <i class="fa fa-spin fa-circle-o-notch me-1"/>Loading...
             </div>
