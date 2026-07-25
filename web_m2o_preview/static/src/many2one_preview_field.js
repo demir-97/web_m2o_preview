@@ -38,7 +38,16 @@ export class Many2OnePreviewField extends Many2OneField {
         });
     }
 
-    onPreviewMouseLeave() {
+    onPreviewMouseLeave(ev) {
+        // The popover renders next to (and can visually overlap) the trigger
+        // icon; when it does, the browser fires this mouseleave with
+        // `relatedTarget` pointing into the popover itself, even though the
+        // mouse never really left the widget — closing here would
+        // immediately re-open on the next mouseenter, causing a flicker
+        // loop. Let the popover's own mouseleave decide instead.
+        if (ev && ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest(".o_m2o_preview_popover")) {
+            return;
+        }
         this.m2oPreviewPopover.close();
     }
 

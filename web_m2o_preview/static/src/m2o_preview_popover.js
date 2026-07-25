@@ -32,6 +32,16 @@ export class M2oPreviewPopover extends Component {
         this.state.loading = false;
     }
 
+    onMouseLeave(ev) {
+        // Mirror the trigger's own overlap guard: moving back onto the
+        // trigger icon shouldn't close the popover either, otherwise the
+        // two mouseleave handlers can fight and flicker.
+        if (ev && ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest(".o_m2o_preview_trigger")) {
+            return;
+        }
+        this.props.close();
+    }
+
     get imageUrl() {
         return `/web/image/${this.props.resModel}/${this.props.resId}/${this.props.imageField}`;
     }
