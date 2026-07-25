@@ -9,6 +9,8 @@ export class M2oPreviewPopover extends Component {
         fieldNames: Array,
         imageField: { type: String, optional: true },
         close: { type: Function, optional: true },
+        onPopoverMouseEnter: { type: Function, optional: true },
+        onPopoverMouseLeave: { type: Function, optional: true },
     };
 
     setup() {
@@ -32,14 +34,12 @@ export class M2oPreviewPopover extends Component {
         this.state.loading = false;
     }
 
-    onMouseLeave(ev) {
-        // Mirror the trigger's own overlap guard: moving back onto the
-        // trigger icon shouldn't close the popover either, otherwise the
-        // two mouseleave handlers can fight and flicker.
-        if (ev && ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest(".o_m2o_preview_trigger")) {
-            return;
-        }
-        this.props.close();
+    onMouseEnter() {
+        this.props.onPopoverMouseEnter?.();
+    }
+
+    onMouseLeave() {
+        this.props.onPopoverMouseLeave?.();
     }
 
     get imageUrl() {

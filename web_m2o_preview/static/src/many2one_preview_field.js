@@ -21,6 +21,7 @@ export class Many2OnePreviewField extends Many2OneField {
     setup() {
         this.orm = useService("orm");
         this.m2oPreviewPopover = usePopover(M2oPreviewPopover, { position: "top" });
+        this.closeTimer = null;
     }
 
     get previewFieldNames() {
@@ -44,30 +45,46 @@ export class Many2OnePreviewField extends Many2OneField {
         return this.props.record.fields[this.props.name].relation;
     }
 
+    // Odoo wraps the popover content in its own `.o_popover` box (arrow,
+    // padding, ...), so `relatedTarget`-based containment checks on
+    // mouseleave/mouseenter are unreliable — the mouse crosses into that
+    // outer wrapper first, not directly into our template's root element.
+    // A short close-delay ("hover intent") sidesteps the exact DOM
+    // structure entirely: leaving either the trigger or the popover just
+    // schedules a close, and entering the other one cancels it.
+    _cancelScheduledClose() {
+        if (this.closeTimer) {
+            clearTimeout(this.closeTimer);
+            this.closeTimer = null;
+        }
+    }
+
+    _scheduleClose() {
+        this._cancelScheduledClose();
+        this.closeTimer = setTimeout(() => {
+            this.closeTimer = null;
+            this.m2oPreviewPopover.close();
+        }, 200);
+    }
+
     onPreviewMouseEnter(ev) {
         const resId = this.currentResId;
         if (!resId) {
             return;
         }
+        this._cancelScheduledClose();
         this.m2oPreviewPopover.open(ev.currentTarget, {
             resModel: this.relation,
             resId,
             fieldNames: this.previewFieldNames,
             imageField: this.props.previewImageField || "",
+            onPopoverMouseEnter: () => this._cancelScheduledClose(),
+            onPopoverMouseLeave: () => this._scheduleClose(),
         });
     }
 
-    onPreviewMouseLeave(ev) {
-        // The popover renders next to (and can visually overlap) the trigger
-        // icon; when it does, the browser fires this mouseleave with
-        // `relatedTarget` pointing into the popover itself, even though the
-        // mouse never really left the widget — closing here would
-        // immediately re-open on the next mouseenter, causing a flicker
-        // loop. Let the popover's own mouseleave decide instead.
-        if (ev && ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest(".o_m2o_preview_popover")) {
-            return;
-        }
-        this.m2oPreviewPopover.close();
+    onPreviewMouseLeave() {
+        this._scheduleClose();
     }
 
     onPreviewClick(ev) {
@@ -75,6 +92,7 @@ export class Many2OnePreviewField extends Many2OneField {
         // don't let the click bubble to the many2one widget underneath.
         ev.stopPropagation();
         ev.preventDefault();
+        this._cancelScheduledClose();
         if (this.m2oPreviewPopover.isOpen) {
             this.m2oPreviewPopover.close();
         } else {
