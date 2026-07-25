@@ -15,6 +15,7 @@ export class Many2OnePreviewField extends Many2OneField {
     setup() {
         super.setup();
         this.m2oPreviewPopover = usePopover(M2oPreviewPopover, { position: "top" });
+        this.closeTimer = null;
     }
 
     get previewFieldNames() {
@@ -24,36 +25,53 @@ export class Many2OnePreviewField extends Many2OneField {
             .filter(Boolean);
     }
 
+    // Odoo wraps the popover content in its own `.o_popover` box (arrow,
+    // padding, ...), so `relatedTarget`-based containment checks on
+    // mouseleave/mouseenter are unreliable — the mouse crosses into that
+    // outer wrapper first, not directly into our template's root element.
+    // A short close-delay ("hover intent") sidesteps the exact DOM
+    // structure entirely: leaving either the trigger or the popover just
+    // schedules a close, and entering the other one cancels it.
+    _cancelScheduledClose() {
+        if (this.closeTimer) {
+            clearTimeout(this.closeTimer);
+            this.closeTimer = null;
+        }
+    }
+
+    _scheduleClose() {
+        this._cancelScheduledClose();
+        this.closeTimer = setTimeout(() => {
+            this.closeTimer = null;
+            this.m2oPreviewPopover.close();
+        }, 200);
+    }
+
     onPreviewMouseEnter(ev) {
         // `resId`/`relation` are inherited getters from Many2OneField:
         // this.value is the [id, display_name] tuple in 17.0/18.0.
         if (!this.resId) {
             return;
         }
+        this._cancelScheduledClose();
         this.m2oPreviewPopover.open(ev.currentTarget, {
             resModel: this.relation,
             resId: this.resId,
             fieldNames: this.previewFieldNames,
             imageField: this.props.previewImageField || "",
+            onPopoverMouseEnter: () => this._cancelScheduledClose(),
+            onPopoverMouseLeave: () => this._scheduleClose(),
         });
     }
 
-    onPreviewMouseLeave(ev) {
-        // The popover renders next to (and can visually overlap) the trigger
-        // icon; when it does, the browser fires this mouseleave with
-        // `relatedTarget` pointing into the popover itself, even though the
-        // mouse never really left the widget — closing here would
-        // immediately re-open on the next mouseenter, causing a flicker
-        // loop. Let the popover's own mouseleave decide instead.
-        if (ev && ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest(".o_m2o_preview_popover")) {
-            return;
-        }
-        this.m2oPreviewPopover.close();
+    onPreviewMouseLeave() {
+        this._scheduleClose();
     }
 
     onPreviewClick(ev) {
         ev.stopPropagation();
         ev.preventDefault();
+        this._cancelScheduledClose();
         if (this.m2oPreviewPopover.isOpen) {
             this.m2oPreviewPopover.close();
         } else {
