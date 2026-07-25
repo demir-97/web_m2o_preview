@@ -37,6 +37,7 @@ preview is purely additive, triggered only by the eye icon, and only reads
 data, it never changes anything.
 """,
     'depends': ['web'],
+    'images': ['static/description/banner.png'],
     'data': [],
     'assets': {
         'web.assets_backend': [
