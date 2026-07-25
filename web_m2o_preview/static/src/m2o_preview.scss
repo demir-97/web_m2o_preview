@@ -1,0 +1,20 @@
+.o_m2o_preview_trigger {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 0.85em;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.o_m2o_preview_popover {
+    min-width: 180px;
+    max-width: 280px;
+}
+
+.o_m2o_preview_avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
