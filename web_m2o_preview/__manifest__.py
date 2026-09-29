@@ -47,6 +47,4 @@ data, it never changes anything.
     'installable': True,
     'application': False,
     'license': 'OPL-1',
-    'price': 9.0,
-    'currency': 'USD',
 }
