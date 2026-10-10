@@ -1,0 +1,37 @@
+.o_m2o_preview_trigger_wrapper {
+    position: relative;
+}
+
+.o_m2o_preview_trigger {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 0.85em;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+// Positioned via an inline `style` (position: fixed, computed from the
+// trigger icon's viewport rect in many2one_preview_field.js) so the card
+// always renders on top of the page and is never clipped by an
+// `overflow: hidden` ancestor — a form sheet, a table cell, ... — the way a
+// plain `position: absolute` confined to this widget's own wrapper would be.
+.o_m2o_preview_card_anchor {
+    z-index: 1060;
+}
+
+.o_m2o_preview_card {
+    min-width: 180px;
+    max-width: 280px;
+    background-color: var(--Popover-bg, white);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.o_m2o_preview_avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_m2o_preview.Many2OnePreviewField">
+        <span class="o_m2o_preview_wrapper d-inline-flex align-items-center w-100 gap-1">
+            <span class="flex-grow-1 min-w-0">
+                <t t-call="web.Many2OneField"/>
+            </span>
+            <span t-if="this.previewResId"
+                class="o_m2o_preview_trigger_wrapper d-inline-flex"
+                t-on-mouseenter="this.onWrapperMouseEnter"
+                t-on-mouseleave="this.onWrapperMouseLeave">
+                <i class="o_m2o_preview_trigger fa fa-eye text-muted"
+                    title="Preview"
+                    role="button"
+                    tabindex="0"
+                    t-on-click="this.onPreviewClick"
+                />
+                <div t-if="this.previewState.open" t-att-style="this.previewState.style" class="o_m2o_preview_card_anchor">
+                    <M2oPreviewCard
+                        resModel="this.relation"
+                        resId="this.previewResId"
+                        fieldNames="this.previewFieldNames"
+                        imageField="this.props.previewImageField or ''"
+                    />
+                </div>
+            </span>
+        </span>
+    </t>
+
+</templates>
