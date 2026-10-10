@@ -1,10 +1,10 @@
 {
     'name': 'Many2one Hover Preview | Quick Peek Card for Many2one Fields',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Productivity',
     'author': 'Meisanqo',
     'support': 'meisanqo@outlook.com',
-    'summary': 'Hover preview card for any many2one field — no click needed.',
+    'summary': "Hover preview for many2one fields: a small eye icon next to the field opens a many2one preview card of the linked record without leaving the form, so there is no click, no navigation and no going back. The quick view card shows the record's name, an optional image and any fields you pick (email, phone, city, ...) through the many2one_preview widget's preview_fields and preview_image_field options. Hover on desktop, tap on touch. Read-only and purely additive: search, create and open behave exactly as before.",
     'description': """
 Many2one Hover Preview
 =======================
