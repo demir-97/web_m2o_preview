@@ -1,5 +1,8 @@
 .o_m2o_preview_trigger_wrapper {
     position: relative;
+    // A wide many2one input (e.g. the invoice customer) would otherwise
+    // squeeze the icon to zero width.
+    flex-shrink: 0;
 }
 
 .o_m2o_preview_trigger {

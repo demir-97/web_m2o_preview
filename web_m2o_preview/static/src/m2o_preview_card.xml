@@ -4,7 +4,7 @@
     <t t-name="web_m2o_preview.M2oPreviewCard">
         <div class="o_m2o_preview_card p-2">
             <div t-if="this.state.loading" class="text-muted small">
-                <i class="fa fa-spin fa-circle-o-notch me-1"/>Loading...
+                <i class="oi oi-spin me-1" data-icon="autorenew"/>Loading...
             </div>
             <div t-else="" class="d-flex align-items-start gap-2">
                 <img t-if="this.props.imageField"

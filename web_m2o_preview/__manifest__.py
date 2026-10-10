@@ -1,6 +1,6 @@
 {
     'name': 'Many2one Hover Preview | Quick Peek Card for Many2one Fields',
-    'version': '20.0.1.0.1',
+    'version': '20.0.1.0.2',
     'category': 'Productivity',
     'author': 'Meisanqo',
     'support': 'meisanqo@outlook.com',

@@ -10,7 +10,7 @@
                 class="o_m2o_preview_trigger_wrapper d-inline-flex"
                 t-on-mouseenter="this.onWrapperMouseEnter"
                 t-on-mouseleave="this.onWrapperMouseLeave">
-                <i class="o_m2o_preview_trigger fa fa-eye text-muted"
+                <i class="o_m2o_preview_trigger oi text-muted" data-icon="visibility"
                     title="Preview"
                     role="button"
                     tabindex="0"
